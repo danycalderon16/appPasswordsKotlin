@@ -6,17 +6,20 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     tools:context=".activities.LoginActivity">
+
     <Button
         android:id="@+id/google_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:background="#fff"
         android:drawableLeft="@drawable/googleg_standard_color_18"
         android:padding="10dp"
+        android:backgroundTint="@color/white"
+        android:textSize="18sp"
         android:text="Ingresa usando Google"
         android:textAllCaps="false"
+        android:textColor="#757575"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -11,6 +11,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import com.dacv.apppasswords.R
 import com.dacv.apppasswords.databinding.ActivityMainBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -43,12 +44,6 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAnchorView(R.id.fab)
-                .setAction("Action", null).show()
-        }
-
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -68,8 +63,12 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings ->{
-                logout()
+            R.id.action_logout ->{
+                AlertDialog.Builder(this)
+                    .setMessage("¿Está seguro de cerrar sesión?")
+                    .setPositiveButton("Sí",{d,i-> logout()})
+                    .setNegativeButton("No",{d,i->d.dismiss()})
+                    .show()
                 true
             }
 
