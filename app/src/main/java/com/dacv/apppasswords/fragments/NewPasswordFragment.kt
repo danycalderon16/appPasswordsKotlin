@@ -87,11 +87,11 @@ class NewPasswordFragment : Fragment() {
                 cal.get(Calendar.MINUTE).toString()+
                 cal.get(Calendar.SECOND).toString()+
                 cal.get(Calendar.MILLISECOND).toString()
-        Log.i("IDDDDDDDDDD",id.toString())
 
         val password = binding.tfPassword.editText?.text.toString().trim()
 
         val datos = hashMapOf(
+            "id" to id,
             "account" to binding.tfAccount.editText!!.text.toString().trim(),
             "email" to binding.tfEmail.editText!!.text.toString().trim(),
             "password" to md5(password),
@@ -122,6 +122,5 @@ class NewPasswordFragment : Fragment() {
         val md = MessageDigest.getInstance("MD5")
         return BigInteger(1, md.digest(input.toByteArray())).toString(16).padStart(32, '0')
     }
-
 
 }
