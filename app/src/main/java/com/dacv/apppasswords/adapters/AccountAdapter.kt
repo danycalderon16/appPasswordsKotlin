@@ -11,6 +11,13 @@ import com.bumptech.glide.Glide
 import com.dacv.apppasswords.R
 import com.dacv.apppasswords.models.Account
 
+class AccountAdapter(item:View) : RecyclerView.ViewHolder(item){
+    interface OnItemClickListener{
+        fun onItemClick(account: Account, i:Int)
+    }
+}
+
+/*
 class AccountAdapter (private val context: Context, private val list: ArrayList<Account>,itemListener:OnItemClickListener): RecyclerView.Adapter<AccountAdapter.ViewHolder>(){
 
 
@@ -40,3 +47,4 @@ class AccountAdapter (private val context: Context, private val list: ArrayList<
         fun onItemClick(account: Account, i:Int)
     }
 }
+*/

@@ -1,10 +1,11 @@
 package com.dacv.apppasswords.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dacv.apppasswords.R
 import com.dacv.apppasswords.databinding.FragmentSecondBinding
@@ -32,6 +33,10 @@ class SecondFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val id = requireArguments().getString("id")
+
+        Log.i("ID!!!!!",id.toString())
 
         binding.buttonSecond.setOnClickListener {
             findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
