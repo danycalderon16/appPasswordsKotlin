@@ -1,24 +1,24 @@
 package com.dacv.apppasswords.fragments
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.dacv.apppasswords.R
 import com.dacv.apppasswords.databinding.FragmentSecondBinding
 import com.dacv.apppasswords.models.Account
-import java.math.BigInteger
-import java.security.MessageDigest
+import com.dacv.apppasswords.utils.File.Companion.function
+import java.util.*
 import java.util.concurrent.Executor
-
-import androidx.biometric.BiometricPrompt;
-import androidx.core.content.ContextCompat
 
 
 /**
@@ -35,11 +35,13 @@ class SecondFragment : Fragment() {
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
+
+    private lateinit var account:Account
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
 
         executor = ContextCompat.getMainExecutor(requireContext())
         biometricPrompt = BiometricPrompt(this, executor,
@@ -51,15 +53,24 @@ class SecondFragment : Fragment() {
                         "Authentication error: $errString", Toast.LENGTH_SHORT)
                         .show()
                 }
-
                 override fun onAuthenticationSucceeded(
                     result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    Toast.makeText(requireContext(),
-                        "Authentication succeeded!", Toast.LENGTH_SHORT)
-                        .show()
-                }
+                    val pass = binding.tfDetailsAccount.editText?.text.toString()
+                    if (function(pass) == (account.password)) {
+                        Toast.makeText(requireContext(), "Esa es su contraseña", Toast.LENGTH_SHORT).show()
+                        val timer = object: CountDownTimer(5000, 1000) {
+                            override fun onTick(millisUntilFinished: Long) {
+                            }
+                            override fun onFinish() {
+                                binding.tfDetailsAccount.editText?.setText("")
+                            }
+                        }
+                        timer.start()
+                    }else
+                        Toast.makeText(requireContext(), "Contraseña incorrecta", Toast.LENGTH_SHORT).show()
 
+                }
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
                     Toast.makeText(requireContext(), "Authentication failed",
@@ -69,9 +80,9 @@ class SecondFragment : Fragment() {
             })
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Biometric login for my app")
-            .setSubtitle("Log in using your biometric credential")
-            .setNegativeButtonText("Use account password")
+            .setTitle("Confirme su identidad")
+            .setSubtitle("Ingrese su credencial biométrica")
+            .setNegativeButtonText("Cancelar")
             .build()
         _binding = FragmentSecondBinding.inflate(inflater, container, false)
         return binding.root
@@ -81,40 +92,25 @@ class SecondFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val account:Account = requireArguments().getSerializable("id") as Account
-
-        Log.i("ID!!!!!",id.toString())
+        account = requireArguments().getSerializable("id") as Account
 
         (activity as AppCompatActivity).supportActionBar?.title = account.account
 
         requireActivity().title = account.account
-        binding.tvDetailsEmail.text = "${account.email}"
+        binding.tvDetailsEmail.text = account.email
         Glide.with(requireContext())
             .load(account.image)
             .transform(RoundedCorners(20))
+            .placeholder(R.drawable.ic_baseline_broken_image_24)
             .into(binding.imDetailsLogo)
 
         binding.buttonCheck.setOnClickListener {
-            val pass = binding.tfDetailsAccount.editText?.text.toString()
             biometricPrompt.authenticate(promptInfo)
-            //if (md5(pass) == (account.password)) {
-
-
-                // Prompt appears when user clicks "Log in".
-                // Consider integrating with the keystore to unlock cryptographic operations,
-                // if needed by your app.
-
-            //}
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    fun md5(input:String): String {
-        val md = MessageDigest.getInstance("MD5")
-        return BigInteger(1, md.digest(input.toByteArray())).toString(16).padStart(32, '0')
     }
 }

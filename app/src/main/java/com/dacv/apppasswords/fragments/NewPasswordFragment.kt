@@ -1,40 +1,21 @@
 package com.dacv.apppasswords.fragments
 
-import android.content.Context
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.util.Base64.decode
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import com.dacv.apppasswords.databinding.FragmentNewPasswordBinding
+import com.dacv.apppasswords.utils.File.Companion.function
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.common.util.Base64Utils.decode
-import com.google.common.primitives.UnsignedLongs.decode
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
-import java.lang.Byte.decode
-import java.lang.Integer.decode
-import java.math.BigInteger
-import java.security.MessageDigest
-import java.security.spec.PSSParameterSpec.DEFAULT
-import java.text.DateFormat.DEFAULT
 import java.util.*
-import javax.crypto.Cipher
-import javax.crypto.KeyGenerator
-import javax.crypto.SecretKey
-import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.OAEPParameterSpec.DEFAULT
 
 class NewPasswordFragment : Fragment() {
 
@@ -42,7 +23,6 @@ class NewPasswordFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var auth: FirebaseAuth
 
     private var db = FirebaseFirestore.getInstance()
@@ -68,14 +48,14 @@ class NewPasswordFragment : Fragment() {
         }
 
         var decr = ""
-        binding.decrypt.setOnClickListener {
+       /* binding.decrypt.setOnClickListener {
             decr = binding.tfPassword.editText?.text.toString()
-            if(md5(enc) == md5(decr)){
+            if(function(enc) == function(decr)){
                 Log.i("### match","Hubó coincidencia")
             }else {
                 Log.i("### No match", "No hubó coincidencia")
             }
-        }
+        }*/
     }
 
     private fun addAccountFirestore() {
@@ -95,7 +75,7 @@ class NewPasswordFragment : Fragment() {
             "id" to id,
             "account" to binding.tfAccount.editText!!.text.toString().trim(),
             "email" to binding.tfEmail.editText!!.text.toString().trim(),
-            "password" to md5(password),
+            "password" to function(password),
             "image" to binding.tfImage.editText!!.text.toString().trim(),
         )
         val reference = db.collection("users").document(auth.currentUser!!.uid)
@@ -118,10 +98,4 @@ class NewPasswordFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-    fun md5(input:String): String {
-        val md = MessageDigest.getInstance("MD5")
-        return BigInteger(1, md.digest(input.toByteArray())).toString(16).padStart(32, '0')
-    }
-
 }
