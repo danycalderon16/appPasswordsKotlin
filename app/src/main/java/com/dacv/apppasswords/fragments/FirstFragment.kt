@@ -87,9 +87,9 @@ class FirstFragment : Fragment() {
 
                 holder.itemView.setOnClickListener {
                     val bundle =  Bundle()
-                    bundle.putString("id",model.id)
+                    //bundle.putString("id",model.id)
+                    bundle.putSerializable("id",model)
                     findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment,bundle)
-                    Toast.makeText(requireContext(), model.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
         }

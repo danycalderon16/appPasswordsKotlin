@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     android:clickable="true"
@@ -41,7 +42,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight=".5"
-                android:gravity="center_vertical"
                 android:text="dany.calderon16@gmail.com"/>
         </LinearLayout>
     </LinearLayout>

@@ -1,6 +1,8 @@
 package com.dacv.apppasswords.models
 
-class Account {
+import java.io.Serializable
+
+class Account : Serializable{
 
     var id = ""
     var account = ""

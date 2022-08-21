@@ -63,16 +63,17 @@ class NewPasswordFragment : Fragment() {
 
         var enc = ""
         binding.btnAdd.setOnClickListener {
-            addAccountFirestore()
+            enc = binding.tfAccount.editText?.text.toString()
+        //addAccountFirestore()
         }
 
         var decr = ""
         binding.decrypt.setOnClickListener {
             decr = binding.tfPassword.editText?.text.toString()
-            Log.i("#### decr",decr.toString())
-            val dec = md5(decr)
-            if(enc == md5(decr)){
+            if(md5(enc) == md5(decr)){
                 Log.i("### match","Hubó coincidencia")
+            }else {
+                Log.i("### No match", "No hubó coincidencia")
             }
         }
     }
