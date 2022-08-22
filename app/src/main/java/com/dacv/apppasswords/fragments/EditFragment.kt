@@ -1,25 +1,22 @@
 package com.dacv.apppasswords.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dacv.apppasswords.R
 import com.dacv.apppasswords.databinding.FragmentEditBinding
-import com.dacv.apppasswords.databinding.FragmentNewPasswordBinding
 import com.dacv.apppasswords.models.Account
-import com.dacv.apppasswords.utils.File
 import com.dacv.apppasswords.utils.File.Companion.KEY
 import com.dacv.apppasswords.utils.File.Companion.encrypt
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import java.security.Key
 
 
 class EditFragment : Fragment() {

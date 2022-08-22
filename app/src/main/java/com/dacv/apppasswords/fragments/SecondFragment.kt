@@ -1,11 +1,7 @@
 package com.dacv.apppasswords.fragments
 
-import android.content.Intent
-import android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG
-import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -26,13 +21,10 @@ import com.dacv.apppasswords.models.Account
 import com.dacv.apppasswords.utils.File.Companion.KEY
 import com.dacv.apppasswords.utils.File.Companion.decryptWithAES
 import com.dacv.apppasswords.utils.File.Companion.encrypt
-import com.dacv.apppasswords.utils.File.Companion.function
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.util.*
 import java.util.concurrent.Executor
 
 

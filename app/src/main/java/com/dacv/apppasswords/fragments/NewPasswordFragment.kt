@@ -1,7 +1,6 @@
 package com.dacv.apppasswords.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +10,6 @@ import androidx.fragment.app.Fragment
 import com.dacv.apppasswords.databinding.FragmentNewPasswordBinding
 import com.dacv.apppasswords.utils.File.Companion.KEY
 import com.dacv.apppasswords.utils.File.Companion.encrypt
-import com.dacv.apppasswords.utils.File.Companion.decryptWithAES
-import com.dacv.apppasswords.utils.File.Companion.function
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
