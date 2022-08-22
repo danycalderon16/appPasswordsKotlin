@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.dacv.apppasswords.fragments.FirstFragment"
-        android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
         <action
@@ -20,6 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
+        android:label="Añadir cuenta"
         android:name="com.dacv.apppasswords.fragments.SecondFragment"
         tools:layout="@layout/fragment_second">
 
@@ -35,6 +35,7 @@
     <fragment
         android:id="@+id/newPasswordFragment"
         android:name="com.dacv.apppasswords.fragments.NewPasswordFragment"
+        android:label="@string/new_password_fragment_label"
         tools:layout="@layout/fragment_new_password">
         <action
             android:id="@+id/action_NewPasswordFragment_to_FirstFragment"
