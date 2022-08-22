@@ -1,7 +1,11 @@
 package com.dacv.apppasswords.fragments
 
+import android.content.Intent
+import android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -46,6 +51,8 @@ class SecondFragment : Fragment() {
     private lateinit var account:Account
 
 
+    private var TYPE = 0
+
     private val db = Firebase.firestore
     private lateinit var auth: FirebaseAuth
 
@@ -69,20 +76,38 @@ class SecondFragment : Fragment() {
                 override fun onAuthenticationSucceeded(
                     result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    val pass = binding.tfDetailsAccount.editText?.text.toString()
-                    if (function(pass) == (account.password)) {
-                        Toast.makeText(requireContext(), "Esa es su contraseña", Toast.LENGTH_SHORT).show()
-                        val timer = object: CountDownTimer(5000, 1000) {
-                            override fun onTick(millisUntilFinished: Long) {
-                            }
-                            override fun onFinish() {
-                                binding.tfDetailsAccount.editText?.setText("")
-                            }
+                    when (TYPE){
+                        DELETE ->{
+                            AlertDialog.Builder(requireContext())
+                                .setMessage("¿Está seguro de eliminar esta cuenta?")
+                                .setPositiveButton("Sí",{d,i->deleteAccount()})
+                                .setNegativeButton("Cancelar",{d,i->d.dismiss()})
+                                .show()
                         }
-                        timer.start()
-                    }else
-                        Toast.makeText(requireContext(), "Contraseña incorrecta", Toast.LENGTH_SHORT).show()
-
+                        EDIT ->{
+                            val bundle = Bundle()
+                            bundle.putSerializable("id", account)
+                            findNavController().navigate(
+                                R.id.action_SecondFragment_to_editFragment,
+                                bundle
+                            )
+                        }
+                        CHECK ->{
+                            val pass = binding.tfDetailsAccount.editText?.text.toString()
+                            if (function(pass) == (account.password)) {
+                                Toast.makeText(requireContext(), "Esa es su contraseña", Toast.LENGTH_SHORT).show()
+                                val timer = object: CountDownTimer(5000, 1000) {
+                                    override fun onTick(millisUntilFinished: Long) {
+                                    }
+                                    override fun onFinish() {
+                                        binding.tfDetailsAccount.editText?.setText("")
+                                    }
+                                }
+                                timer.start()
+                            }else
+                                Toast.makeText(requireContext(), "Contraseña incorrecta", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
@@ -118,25 +143,20 @@ class SecondFragment : Fragment() {
             .into(binding.imDetailsLogo)
 
         binding.buttonCheck.setOnClickListener {
+            TYPE = CHECK
             biometricPrompt.authenticate(promptInfo)
         }
 
         binding.buttonEdit.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putSerializable("id", account)
-            findNavController().navigate(
-                R.id.action_SecondFragment_to_editFragment,
-                bundle
-            )
+            TYPE = EDIT
+            biometricPrompt.authenticate(promptInfo)
         }
 
         binding.buttonDelete.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setMessage("¿Está seguro de eliminar esta cuenta?")
-                .setPositiveButton("Sí",{d,i->deleteAccount()})
-                .setNegativeButton("Cancelar",{d,i->d.dismiss()})
-                .show()
+            TYPE = DELETE
+            biometricPrompt.authenticate(promptInfo)
         }
+
     }
 
     private fun deleteAccount() {
@@ -161,5 +181,12 @@ class SecondFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val EDIT = 1001
+        private const val CHECK = 1002
+        private const val DELETE = 1003
+
     }
 }

@@ -70,6 +70,7 @@ class FirstFragment : Fragment() {
         val query = db.collection("users")
             .document(auth.currentUser!!.uid)
             .collection("passwords")
+            .orderBy("account")
 
         val options =
             FirestoreRecyclerOptions.Builder<Account>().setQuery(query, Account::class.java)
@@ -91,7 +92,7 @@ class FirstFragment : Fragment() {
                 email.text = model.email
                 Glide.with(requireContext())
                     .load(model.image)
-                    .transform(RoundedCorners(20))
+                    .transform(RoundedCorners(40))
                     .into(image)
 
                 holder.itemView.setOnClickListener {

@@ -5,10 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
 import com.dacv.apppasswords.R
 import com.dacv.apppasswords.databinding.FragmentEditBinding
 import com.dacv.apppasswords.databinding.FragmentNewPasswordBinding
 import com.dacv.apppasswords.models.Account
+import com.dacv.apppasswords.utils.File
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -46,6 +50,41 @@ class EditFragment : Fragment() {
         binding.tfAccount.editText?.setText(account.account)
         binding.tfEmail.editText?.setText(account.email)
         binding.tfImage.editText?.setText(account.image)
+
+        binding.btnUpdate.setOnClickListener {
+            updateAccount()
+        }
+    }
+
+    private fun updateAccount() {
+        val password = binding.tfPassword.editText?.text.toString().trim()
+
+        val datos = mapOf(
+            "id" to account.id,
+            "account" to binding.tfAccount.editText!!.text.toString().trim(),
+            "email" to binding.tfEmail.editText!!.text.toString().trim(),
+            "password" to File.function(password),
+            "image" to binding.tfImage.editText!!.text.toString().trim(),
+        )
+        val reference = db.collection("users").document(auth.currentUser!!.uid)
+        reference.collection("passwords")
+            .document(account.id)
+            .update(datos)
+            .addOnCompleteListener {
+                binding.tfAccount.editText?.setText("")
+                binding.tfEmail.editText?.setText("")
+                binding.tfPassword.editText?.setText("")
+                binding.tfImage.editText?.setText("")
+                Toast.makeText(requireContext(), "Se actualizo exitosamente", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_editFragment_to_FirstFragment)
+            }
+            .addOnFailureListener {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Atención")
+                    .setMessage("Hubó un error")
+                    .setPositiveButton("Cerrar",{d,i->})
+                    .show()
+            }
     }
 
     override fun onDestroyView() {

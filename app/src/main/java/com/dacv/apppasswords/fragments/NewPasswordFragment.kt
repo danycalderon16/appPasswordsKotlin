@@ -44,7 +44,6 @@ class NewPasswordFragment : Fragment() {
         binding.btnAdd.setOnClickListener {
             addAccountFirestore()
         }
-
     }
 
     private fun addAccountFirestore() {
@@ -68,12 +67,12 @@ class NewPasswordFragment : Fragment() {
             "image" to binding.tfImage.editText!!.text.toString().trim(),
         )
         val reference = db.collection("users").document(auth.currentUser!!.uid)
-        reference.collection("passwords")
-            .document(id)
-            .set(datos)
-            .addOnCompleteListener {
-                binding.tfAccount.editText?.setText("")
-                binding.tfEmail.editText?.setText("")
+                reference.collection("passwords")
+                    .document(id)
+                    .set(datos)
+                    .addOnCompleteListener {
+                        binding.tfAccount.editText?.setText("")
+                        binding.tfEmail.editText?.setText("")
                 binding.tfPassword.editText?.setText("")
                 binding.tfImage.editText?.setText("")
                 Toast.makeText(requireContext(), "Se agrego exitosamente", Toast.LENGTH_SHORT).show()
