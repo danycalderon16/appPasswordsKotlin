@@ -13,10 +13,13 @@ import com.dacv.apppasswords.databinding.FragmentEditBinding
 import com.dacv.apppasswords.databinding.FragmentNewPasswordBinding
 import com.dacv.apppasswords.models.Account
 import com.dacv.apppasswords.utils.File
+import com.dacv.apppasswords.utils.File.Companion.KEY
+import com.dacv.apppasswords.utils.File.Companion.encrypt
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import java.security.Key
 
 
 class EditFragment : Fragment() {
@@ -63,7 +66,7 @@ class EditFragment : Fragment() {
             "id" to account.id,
             "account" to binding.tfAccount.editText!!.text.toString().trim(),
             "email" to binding.tfEmail.editText!!.text.toString().trim(),
-            "password" to File.function(password),
+            "password" to encrypt(password,KEY),
             "image" to binding.tfImage.editText!!.text.toString().trim(),
         )
         val reference = db.collection("users").document(auth.currentUser!!.uid)

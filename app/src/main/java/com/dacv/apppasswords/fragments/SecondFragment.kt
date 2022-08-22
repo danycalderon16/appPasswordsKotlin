@@ -23,6 +23,9 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.dacv.apppasswords.R
 import com.dacv.apppasswords.databinding.FragmentSecondBinding
 import com.dacv.apppasswords.models.Account
+import com.dacv.apppasswords.utils.File.Companion.KEY
+import com.dacv.apppasswords.utils.File.Companion.decryptWithAES
+import com.dacv.apppasswords.utils.File.Companion.encrypt
 import com.dacv.apppasswords.utils.File.Companion.function
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -38,11 +41,7 @@ import java.util.concurrent.Executor
  */
 class SecondFragment : Fragment() {
 
-    private var _binding: FragmentSecondBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentSecondBinding
 
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
@@ -50,6 +49,7 @@ class SecondFragment : Fragment() {
 
     private lateinit var account:Account
 
+    private var counter = 0
 
     private var TYPE = 0
 
@@ -94,7 +94,9 @@ class SecondFragment : Fragment() {
                         }
                         CHECK ->{
                             val pass = binding.tfDetailsAccount.editText?.text.toString()
-                            if (function(pass) == (account.password)) {
+                            val passEncrypted = encrypt(pass,KEY)
+                            if (decryptWithAES(KEY,passEncrypted) == (account.password)) {
+                            //if (function(pass) == (account.password)) {
                                 Toast.makeText(requireContext(), "Esa es su contraseña", Toast.LENGTH_SHORT).show()
                                 val timer = object: CountDownTimer(5000, 1000) {
                                     override fun onTick(millisUntilFinished: Long) {
@@ -106,6 +108,23 @@ class SecondFragment : Fragment() {
                                 timer.start()
                             }else
                                 Toast.makeText(requireContext(), "Contraseña incorrecta", Toast.LENGTH_SHORT).show()
+                        }
+                        VIEW ->{
+                            val pass = binding.tfDetailsAccount.editText?.text.toString()
+                            val passEncrypted = encrypt(account.password,KEY)
+                            val dec =  decryptWithAES(KEY,account.password)
+                            Log.i("TEST enc", passEncrypted.toString())
+                            Log.i("TEST dec", dec.toString())
+                            binding.textView.text = decryptWithAES(KEY,account.password)
+
+                            val timer = object: CountDownTimer(1500, 1000) {
+                                override fun onTick(millisUntilFinished: Long) {
+                                }
+                                override fun onFinish() {
+                                    binding.textView.text = ""
+                                }
+                            }
+                            timer.start()
                         }
                     }
                 }
@@ -122,7 +141,7 @@ class SecondFragment : Fragment() {
             .setSubtitle("Ingrese su credencial biométrica")
             .setNegativeButtonText("Cancelar")
             .build()
-        _binding = FragmentSecondBinding.inflate(inflater, container, false)
+        binding = FragmentSecondBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -157,6 +176,16 @@ class SecondFragment : Fragment() {
             biometricPrompt.authenticate(promptInfo)
         }
 
+        binding.imDetailsLogo.setOnClickListener {
+            if(counter==10) {
+                TYPE = VIEW
+                biometricPrompt.authenticate(promptInfo)
+                counter = 0
+            }
+            counter++
+            Log.i("counter",""+counter)
+        }
+
     }
 
     private fun deleteAccount() {
@@ -180,13 +209,13 @@ class SecondFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 
     companion object {
         private const val EDIT = 1001
         private const val CHECK = 1002
         private const val DELETE = 1003
+        private const val VIEW = 1004
 
     }
 }

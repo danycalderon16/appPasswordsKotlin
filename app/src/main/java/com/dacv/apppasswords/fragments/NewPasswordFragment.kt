@@ -9,8 +9,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.dacv.apppasswords.databinding.FragmentNewPasswordBinding
+import com.dacv.apppasswords.utils.File.Companion.KEY
+import com.dacv.apppasswords.utils.File.Companion.encrypt
+import com.dacv.apppasswords.utils.File.Companion.decryptWithAES
 import com.dacv.apppasswords.utils.File.Companion.function
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,9 +23,7 @@ import java.util.*
 
 class NewPasswordFragment : Fragment() {
 
-    private var _binding: FragmentNewPasswordBinding? = null
-
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentNewPasswordBinding
 
     private lateinit var auth: FirebaseAuth
 
@@ -34,7 +36,7 @@ class NewPasswordFragment : Fragment() {
 
         auth = Firebase.auth
         // Inflate the layout for this fragment
-        _binding = FragmentNewPasswordBinding.inflate(inflater, container, false)
+        binding = FragmentNewPasswordBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -42,7 +44,11 @@ class NewPasswordFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnAdd.setOnClickListener {
-            addAccountFirestore()
+            if (validateTextInputLayout(binding.tfPassword) and
+                    validateTextInputLayout(binding.tfEmail) and
+                    validateTextInputLayout(binding.tfAccount))
+                addAccountFirestore()
+                //testing()
         }
     }
 
@@ -63,7 +69,7 @@ class NewPasswordFragment : Fragment() {
             "id" to id,
             "account" to binding.tfAccount.editText!!.text.toString().trim(),
             "email" to binding.tfEmail.editText!!.text.toString().trim(),
-            "password" to function(password),
+            "password" to encrypt(password,KEY),
             "image" to binding.tfImage.editText!!.text.toString().trim(),
         )
         val reference = db.collection("users").document(auth.currentUser!!.uid)
@@ -86,8 +92,15 @@ class NewPasswordFragment : Fragment() {
             }
     }
 
+    private fun validateTextInputLayout(textInputLayout: TextInputLayout):Boolean{
+        if (textInputLayout.editText?.text?.isEmpty() == true) {
+            textInputLayout.error = "Este campo es obligatorio"
+            return false
+        }
+        return true
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 }

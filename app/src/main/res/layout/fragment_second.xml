@@ -85,4 +85,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:strokeColor="@color/red_primary_dark"
             app:strokeWidth="1dp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/button_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_check" />
 </androidx.constraintlayout.widget.ConstraintLayout>
