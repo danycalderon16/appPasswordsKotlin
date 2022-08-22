@@ -7,16 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.dacv.apppasswords.R
 import com.dacv.apppasswords.databinding.FragmentSecondBinding
 import com.dacv.apppasswords.models.Account
 import com.dacv.apppasswords.utils.File.Companion.function
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import java.util.*
 import java.util.concurrent.Executor
 
@@ -38,10 +45,16 @@ class SecondFragment : Fragment() {
 
     private lateinit var account:Account
 
+
+    private val db = Firebase.firestore
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        auth = Firebase.auth
 
         executor = ContextCompat.getMainExecutor(requireContext())
         biometricPrompt = BiometricPrompt(this, executor,
@@ -107,6 +120,42 @@ class SecondFragment : Fragment() {
         binding.buttonCheck.setOnClickListener {
             biometricPrompt.authenticate(promptInfo)
         }
+
+        binding.buttonEdit.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putSerializable("id", account)
+            findNavController().navigate(
+                R.id.action_SecondFragment_to_editFragment,
+                bundle
+            )
+        }
+
+        binding.buttonDelete.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setMessage("¿Está seguro de eliminar esta cuenta?")
+                .setPositiveButton("Sí",{d,i->deleteAccount()})
+                .setNegativeButton("Cancelar",{d,i->d.dismiss()})
+                .show()
+        }
+    }
+
+    private fun deleteAccount() {
+        db.collection("users")
+            .document(auth.currentUser!!.uid)
+            .collection("passwords")
+            .document(account.id)
+            .delete()
+            .addOnCompleteListener {
+                val bundle = Bundle()
+                bundle.putBoolean("message", true)
+                findNavController().navigate(
+                    R.id.action_SecondFragment_to_FirstFragment,
+                    bundle
+                )
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Hubo un error", Toast.LENGTH_SHORT).show()
+            }
     }
 
     override fun onDestroyView() {

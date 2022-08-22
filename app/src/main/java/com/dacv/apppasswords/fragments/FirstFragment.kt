@@ -19,6 +19,7 @@ import com.dacv.apppasswords.databinding.FragmentFirstBinding
 import com.dacv.apppasswords.models.Account
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -60,23 +61,31 @@ class FirstFragment : Fragment() {
         rv = binding.rv
         auth = Firebase.auth
 
+        val message = arguments?.getBoolean("message")
+
+        if (message == true){
+            Snackbar.make(binding.cordiFirst,"Se elimino correctamente", Snackbar.LENGTH_SHORT).show()
+        }
+
         val query = db.collection("users")
             .document(auth.currentUser!!.uid)
             .collection("passwords")
 
-        val options = FirestoreRecyclerOptions.Builder<Account>().setQuery(query,Account::class.java)
-            .setLifecycleOwner(this).build()
+        val options =
+            FirestoreRecyclerOptions.Builder<Account>().setQuery(query, Account::class.java)
+                .setLifecycleOwner(this).build()
 
-        val adapter = object: FirestoreRecyclerAdapter<Account,AccountAdapter>(options){
+        val adapter = object : FirestoreRecyclerAdapter<Account, AccountAdapter>(options) {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountAdapter {
-                val v:View = LayoutInflater.from(parent.context).inflate(R.layout.card_account,parent,false)
-                return AccountAdapter(v,)
+                val v: View = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.card_account, parent, false)
+                return AccountAdapter(v)
             }
 
             override fun onBindViewHolder(holder: AccountAdapter, position: Int, model: Account) {
-                var account : TextView = holder.itemView.findViewById(R.id.tv_name)
-                var email : TextView =  holder.itemView.findViewById(R.id.tv_email)
-                var image : ImageView = holder.itemView.findViewById(R.id.img_logo)
+                var account: TextView = holder.itemView.findViewById(R.id.tv_name)
+                var email: TextView = holder.itemView.findViewById(R.id.tv_email)
+                var image: ImageView = holder.itemView.findViewById(R.id.img_logo)
 
                 account.text = model.account
                 email.text = model.email
@@ -86,13 +95,18 @@ class FirstFragment : Fragment() {
                     .into(image)
 
                 holder.itemView.setOnClickListener {
-                    val bundle =  Bundle()
-                    //bundle.putString("id",model.id)
-                    bundle.putSerializable("id",model)
-                    findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment,bundle)
+                    val bundle = Bundle()
+                    bundle.putSerializable("id", model)
+                    findNavController().navigate(
+                        R.id.action_FirstFragment_to_SecondFragment,
+                        bundle
+                    )
                 }
+
+
             }
         }
+
 
         rv.adapter = adapter
         rv.layoutManager = LinearLayoutManager(requireContext())
@@ -103,9 +117,9 @@ class FirstFragment : Fragment() {
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 }
+

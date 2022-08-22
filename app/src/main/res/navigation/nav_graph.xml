@@ -21,7 +21,6 @@
     <fragment
         android:id="@+id/SecondFragment"
         android:name="com.dacv.apppasswords.fragments.SecondFragment"
-        android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_second">
 
         <action
@@ -29,16 +28,27 @@
             app:destination="@id/FirstFragment"
             app:popUpTo="@id/FirstFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_SecondFragment_to_editFragment"
+            app:destination="@id/editFragment" />
     </fragment>
     <fragment
         android:id="@+id/newPasswordFragment"
         android:name="com.dacv.apppasswords.fragments.NewPasswordFragment"
-        android:label="@string/new_password_fragment_label"
         tools:layout="@layout/fragment_new_password">
         <action
             android:id="@+id/action_NewPasswordFragment_to_FirstFragment"
             app:destination="@id/FirstFragment"
             app:popUpTo="@id/FirstFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/editFragment"
+        android:name="com.dacv.apppasswords.fragments.EditFragment"
+        android:label="Editar cuenta"
+        tools:layout="@layout/fragment_edit" >
+        <action
+            android:id="@+id/action_editFragment_to_SecondFragment"
+            app:destination="@id/SecondFragment" />
     </fragment>
 </navigation>
